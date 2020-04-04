@@ -1,32 +1,47 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
     <router-view />
+    <div>
+      <p v-html="html"></p>
+    </div>
   </div>
 </template>
-
+<script>
+export default {
+  data() {
+    return {
+      msg: 'hola',
+      html: ''
+    }
+  },
+  created() {
+    this.msg = this.fetchData()
+  },
+  methods: {
+    fetchData() {
+      fetch('http://localhost:8080/?rest_route=/wp/v2/posts/1')
+        .then(response => {
+          console.log(response)
+          return response.json()
+        })
+        .then(Myjson => {
+          console.log(Myjson.content.rendered)
+          this.html = Myjson.content.rendered
+        })
+    }
+  }
+}
+</script>
 <style lang="scss">
+$theme-color: '#4DBA87';
+body {
+  margin: 0px;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
 }
 </style>
